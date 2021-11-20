@@ -8,15 +8,15 @@ constexpr int FLOAT_MIN = 0;
 constexpr int FLOAT_MAX = 1;
 
 //neighbourCount : what to do/rule.
-std::map<int, std::string> conditionMap = {
-    {1, "underPop"},
-    {2, "LifeOn"},
-    {3, "newLife"},
-    {4, "overPop"},
-    {5, "overPop"},
-    {6, "overPop"},
-    {7, "overPop"},
-    {8, "overPop"}
+std::map<int, bool> conditionMap = {
+    {1, false},
+    {2, true},
+    {3, true},
+    {4, false},
+    {5, false},
+    {6, false},
+    {7, false},
+    {8, false}
 };
 
 class gameOfLife{
@@ -26,6 +26,7 @@ class gameOfLife{
         float probabilityOfCell = 0.2;
 
         void checkIndex(std::vector<int> coords);
+        bool queryResponse(std::string conditionMapResp);
 
     public:
         std::vector<std::vector<bool>> theWorld;
@@ -57,10 +58,24 @@ void gameOfLife::generateNewCells(){
     }
 }
 
+
 void gameOfLife::checkIndex(std::vector<int> coords) {
     if (coords.at(0) < width && coords.at(0) >= 0   &&   coords.at(1) < height && coords.at(1) >= 0) {
         bool isCellAlive = theWorld.at(coords.at(0)).at(coords.at(1));
-        std::vector<bool> neighbours;
+        int neighbours = 0;
 
+        if (isCellAlive == true){
+            neighbours -= 1;
+        }
+
+        for (int y=-1; y<=1; y++) {
+            for (int x=-1; x<=1; x++) {
+                if (theWorld.at(coords.at(0)+x).at(coords.at(1)+y) == true) {
+                    neighbours += 1;
+                }
+            }
+        }
+
+        theWorld.at(coords.at(0)).at(coords.at(1)) = conditionMap[neighbours];
     }
 }
