@@ -21,6 +21,9 @@ std::map<int, bool> conditionMap = {
 
 class gameOfLife{
     private:
+        int printOutputWidth = 25;
+        int printOutputHeight =25;
+
         int width;
         int height;
         float probabilityOfCell = 0.2;
@@ -41,6 +44,7 @@ class gameOfLife{
 
         void generateNewCells();
         void completeEvolution();
+        void printSegment(int xOffSet, int yOffSet);
 };
 
 void gameOfLife::checkIndex(std::vector<int> coords) {
@@ -84,5 +88,28 @@ void gameOfLife::completeEvolution(){
         for (int x=0; x<width; x++) {
             checkIndex({x,y});
         }
+    }
+}
+
+void gameOfLife::printSegment(int xOffSet, int yOffSet) {
+    for (int y=0; y<printOutputHeight; y++) {
+        for (int x=0; x<printOutputWidth; x++) {
+            if (theWorld.at(x+xOffSet).at(y+yOffSet) == true) {
+                std::cout << "[]";
+            }
+            else {
+                std::cout << "  ";
+            }
+        }
+    }
+}
+
+int main() {
+    gameOfLife GOLObj({1000,1000});
+    GOLObj.generateNewCells();
+
+    while (true) {
+        GOLObj.printSegment(0,0); //The values used as offsets can be edited, for example you could have them set to a variable.
+        GOLObj.completeEvolution();
     }
 }
