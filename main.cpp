@@ -40,24 +40,8 @@ class gameOfLife{
         }
 
         void generateNewCells();
-        
+        void completeEvolution();
 };
-
-void gameOfLife::generateNewCells(){
-    std::cout << "Iterating over: " << width*height << " indexes, please wait." << std::endl;
-    std::random_device rd;
-    std::default_random_engine eng(rd());
-    std::uniform_real_distribution<float> distr(FLOAT_MIN, FLOAT_MAX);
-
-    for (int y=0; y<height; y++) {
-        for (int x=0; x<width; x++) {
-            if (distr(eng) < probabilityOfCell) {
-                theWorld.at(x).at(y) = true; //New life has been created :)
-            }
-        }
-    }
-}
-
 
 void gameOfLife::checkIndex(std::vector<int> coords) {
     if (coords.at(0) < width && coords.at(0) >= 0   &&   coords.at(1) < height && coords.at(1) >= 0) {
@@ -77,5 +61,28 @@ void gameOfLife::checkIndex(std::vector<int> coords) {
         }
 
         theWorld.at(coords.at(0)).at(coords.at(1)) = conditionMap[neighbours];
+    }
+}
+
+void gameOfLife::generateNewCells(){
+    std::cout << "Iterating over: " << width*height << " indexes, please wait." << std::endl;
+    std::random_device rd;
+    std::default_random_engine eng(rd());
+    std::uniform_real_distribution<float> distr(FLOAT_MIN, FLOAT_MAX);
+
+    for (int y=0; y<height; y++) {
+        for (int x=0; x<width; x++) {
+            if (distr(eng) < probabilityOfCell) {
+                theWorld.at(x).at(y) = true; //New life has been created :)
+            }
+        }
+    }
+}
+
+void gameOfLife::completeEvolution(){ 
+    for (int y=0; y<height; y++) {
+        for (int x=0; x<width; x++) {
+            checkIndex({x,y});
+        }
     }
 }
