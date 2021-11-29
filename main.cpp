@@ -2,6 +2,7 @@
 #include <random>
 #include <vector>
 #include <stdlib.h>
+#include <Windows.h>
 #include <map>
 
 //Setting conditions of my random number generator.
@@ -32,14 +33,26 @@ std::map<int, bool> newCellConditionMap = {
 };
 
 
+void set_cursor(bool visible){
+    CONSOLE_CURSOR_INFO info;
+    info.dwSize = 100;
+    info.bVisible = visible;
+    SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
+}
+
+void gotoxy(int x, int y) {
+    COORD c = { x, y };  
+    SetConsoleCursorPosition(  GetStdHandle(STD_OUTPUT_HANDLE), c);
+}
+
 class gameOfLife{
     private:
-        int printOutputWidth = 250;
-        int printOutputHeight =250;
+        int printOutputWidth = 100;
+        int printOutputHeight =100;
 
         int width;
         int height;
-        float probabilityOfCell = 0.05;
+        float probabilityOfCell = 0.1;
 
         void checkIndex(std::vector<int> coords);
         bool queryResponse(std::string conditionMapResp);
@@ -111,9 +124,9 @@ void gameOfLife::completeEvolution(){
 }
 
 void gameOfLife::printSegment(int xOffSet, int yOffSet) {
-    system("CLS");
     for (int y=0; y<printOutputHeight; y++) {
         for (int x=0; x<printOutputWidth; x++) {
+            gotoxy(x*2,y);
             if (theWorld.at(x+xOffSet).at(y+yOffSet) == true) {
                 std::cout << "[]";
             }
@@ -126,12 +139,13 @@ void gameOfLife::printSegment(int xOffSet, int yOffSet) {
 }
 
 int main() {
-    gameOfLife GOLObj({1000,1000});
+    set_cursor(false);
+
+    gameOfLife GOLObj({100,100});
     GOLObj.generateNewCells();
 
     while (true) {
         GOLObj.printSegment(0,0); //The values used as offsets can be edited, for example you could have them set to a variable.
-        std::cout << "Data Printed" << std::endl;
         GOLObj.completeEvolution();
     }
 }
